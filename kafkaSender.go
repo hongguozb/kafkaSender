@@ -18,13 +18,6 @@ func main(){
 
 	var kafkaConnect *kafka.Conn
 	var err error
-
-	//window.TextEdit.TextChanged()
-	window.RadioButton_Json.ConnectClicked(func(checked bool) {
-		fmt.Println("checked")
-		if checked{
-			
-		}})
 	window.KafkaButton.ConnectClicked(func(checked bool) {
 		fmt.Println("come here...")
 		if len(window.IpLineEdit.Text())==0{
@@ -45,30 +38,23 @@ func main(){
 				fmt.Println("close err",err.Error())
 			}
 		}
-		window.SendLogBrowser.SetText(window.SendLogBrowser.ToPlainText()+"connct to "+window.IpLineEdit.Text()+":"+window.PortLineEdit.Text()+"\n")
 		kafkaConnect, err = kafka.DialLeader(context.Background(), "tcp", window.IpLineEdit.Text()+":"+window.PortLineEdit.Text(), window.TopicLineEdit.Text(), 0)
 
 		if err!=nil{
 			widgets.QMessageBox_Information(nil,"Ok",err.Error(), widgets.QMessageBox__Ok, widgets.QMessageBox__Ok)
-			return
 		}else {
 			widgets.QMessageBox_Information(nil,"Ok","Connect success!", widgets.QMessageBox__Ok, widgets.QMessageBox__Ok)
-			return
 		}
 	})
 
 	window.SendToButton.ConnectClicked(func(checked bool) {
 		if kafkaConnect==nil {
 			widgets.QMessageBox_Information(nil,"ERROR","Please connect kafka first!",widgets.QMessageBox__Ok, widgets.QMessageBox__Ok)
-			return
 		}
 		fmt.Println(window.TextEdit.ToPlainText())
 		_,err:=kafkaConnect.Write([]byte(window.TextEdit.ToPlainText()))
 		if err!=nil{
 			widgets.QMessageBox_Information(nil,"ERROR",err.Error()+"\nPlease reconnect kafka！",widgets.QMessageBox__Ok, widgets.QMessageBox__Ok)
-			return
-		}else{
-			window.SendLogBrowser.SetText(window.SendLogBrowser.ToPlainText()+"send success!\n")
 		}
 	})
 
